@@ -1,0 +1,103 @@
+#!/bin/python3
+
+"""
+griddle_utils.py
+
+This file contains various standalone methods and tools used by the griddle system. To use
+this file, simple import it and call the needed methods.
+
+Many of the methods were taken and/or adapted from: 
+    https://github.com/torodean/DnD/blob/main/mmorpdnd.py
+"""
+import os
+import subprocess
+
+def output_text(text, option="text"):
+    """
+    Print text to the console in a specified color using ANSI escape codes.
+
+    Args:
+        text (str): The text to be printed.
+        option (str, optional): The color option for the text. Valid options are "text" (default, no color), 
+            "warning" (yellow), "error" (red), "note" (blue), "success" (green), "command" (cyan), 
+            "test" (magenta), and "program" (orange). Defaults to "text". Invalid options result in uncolored text.
+
+    Returns:
+        None
+
+    Note:
+        This function uses ANSI escape codes for color formatting. Colors may not display correctly 
+        in all environments (e.g., some IDEs or Windows terminals without ANSI support).
+    """
+    color_codes = {
+        "text": "\033[0m",      # Reset color
+        "warning": "\033[93m",  # Yellow - Warning text
+        "error": "\033[91m",    # Red - Error text
+        "note": "\033[94m",     # Blue - Notes or program information
+        "success": "\033[92m",  # Green - Success text
+        "command": "\033[36m",  # Cyan - Command output text
+        "test": "\033[35m",     # Magenta - Testing
+        "program": "\033[38;5;208m"  # Orange - Program-specific output
+    }
+    
+    text = str(text)  # Ensure text is a string
+    
+    if option == "error":
+        if "error" not in text.lower():
+            text = f"ERROR: {text}"
+    elif option == "warning":
+        if "error" not in text.lower():
+            text = f"WARNING: {text}"
+    
+    if option in color_codes:
+        color_code = color_codes[option]
+        reset_code = color_codes["text"]
+        print(f"{color_code}{text}{reset_code}")
+    else:
+        print(text)
+        
+
+def find_all_files_with_extensions(extensions, directory=".", excludes=None):
+    """
+    Finds all files with given extensions inside of a directory and includes the corresponding Git URL.
+
+    Args:
+        extensions: A list of file extensions (e.g., ["md", "adoc", "txt"]).
+        directory: The directory to search. Defaults to current directory.
+        excludes: A list of substrings to exclude if found in the file path. Defaults to empty list.
+
+    Returns:
+        A list of dictionaries with file metadata and Git URL.
+    """
+    if excludes is None:
+        excludes = []
+        
+    repo_root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode().strip()
+    remote_url = subprocess.check_output(['git', 'config', '--get', 'remote.origin.url']).decode().strip()
+    branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode().strip()
+
+    if remote_url.endswith('.git'):
+        remote_url = remote_url[:-4]
+    if remote_url.startswith("git@"):
+        remote_url = remote_url.replace(":", "/").replace("git@", "https://")
+
+    matched_files = []
+    for root, dirnames, filenames in os.walk(directory):
+        for filename in filenames:
+            file_path = os.path.join(root, filename)
+
+            if any(exclude in file_path for exclude in excludes):
+                continue
+
+            ext = os.path.splitext(filename)[1].lstrip('.').lower()
+            if ext in extensions:
+                rel_path = os.path.relpath(file_path, repo_root)
+                file_url = f"{remote_url}/blob/{branch}/{rel_path}".replace("\\", "/")                
+                name_no_ext = os.path.splitext(filename)[0]
+                matched_files.append({
+                    'name_no_ext': name_no_ext,
+                    'name_with_ext': filename,
+                    'full_path': file_path,                    
+                    'url': file_url
+                })
+    return matched_files
