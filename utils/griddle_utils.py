@@ -154,3 +154,30 @@ def generate_nav_html(folder_path: str) -> str:
     except Exception as e:
         print(f"Error generating navigation HTML: {str(e)}")
         return ""
+
+
+def ensure_path_exists(file_path):
+    """
+    Ensures that all directories in the given file path exist.
+    
+    Args:
+        file_path (str): Full path to a file (including filename).
+    """
+    dir_path = os.path.dirname(file_path)
+    if dir_path:
+        os.makedirs(dir_path, exist_ok=True)
+
+
+def replace_extension(file_path, new_ext):
+    """
+    Replace the file extension of a given file path.
+
+    Args:
+        file_path (str): Original file path.
+        new_ext (str): New extension to apply (with or without leading dot).
+
+    Returns:
+        str: File path with the new extension.
+    """
+    base = os.path.splitext(file_path)[0]
+    return f"{base}.{new_ext.lstrip('.')}"
