@@ -3,15 +3,17 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     height: 100vh;
-    overflow: hidden;
+    overflow: scroll;
 }
 .navbar {
     width: 250px;
-    background-color: #f4f4f4;
+    background-color: #d4d5d6;
     border-right: 1px solid #ddd;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
+    resize: horizontal;
+    white-space: nowrap;
 }
 .navbar a {
     display: block;
@@ -25,8 +27,8 @@ body {
     background-color: #ddd;
 }
 .navbar a.active {
-    background-color: #007bff;
-    color: white;
+    background-color: #abc2db;
+    color: #333;
 }
 .content {
     flex-grow: 1;
@@ -44,7 +46,6 @@ iframe {
 }
 
 .tree li {
-  margin-left: 10px; /* reduced indent */
   position: relative;
 }
 
@@ -66,10 +67,11 @@ iframe {
 
 .tree ul {
   list-style: none;
-  padding-left: 12px; /* small indent for nested items */
+  padding-left: 10px; /* small indent for nested items */
   margin: 4px 0 0 0;
   display: none;
 }
+
 
 .tree .expanded > ul {
   display: block;
@@ -85,4 +87,7 @@ iframe {
 
 .tree a:hover {
   background-color: #f0f0f0;
+}
+.tree .folder + ul a::before {
+  content: "└ "
 }
