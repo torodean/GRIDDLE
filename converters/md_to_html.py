@@ -1,3 +1,11 @@
+#!/bin/python3
+"""
+md_to_html.py
+
+This file contains various tools and methods needed for use in converting md (markdown)
+files to html. To use this file, simple import it and call the needed methods.
+"""
+
 import markdown
 import sys
 import os
