@@ -8,6 +8,8 @@ Description: A system designed to unify and streamline documentation across mult
 """
 
 import argparse
+import sys
+import os
 
 def parse_arguments() -> argparse.Namespace:
     """
@@ -52,6 +54,22 @@ def main():
     print(f"Debug mode: {args.debug}")
     print(f"Input folder: {args.input}")
     print(f"Output folder: {args.output}")
+
+    for root, dirs, files in os.walk(args.input):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            full_path = os.path.abspath(file_path)
+            name_no_ext = os.path.splitext(filename)[0]
+            ext = os.path.splitext(filename)[1].lstrip('.')
+            new_file = args.output + "/" + replace_extension(file_path, "html")
+            #ensure_path_exists(new_file)
+            
+            #if "md" in ext:
+            #    convert_md_to_html(file_path, new_file)
+            #elif "adoc" in ext:
+            #    convert_adoc_to_html(file_path, new_file)
+            #elif "asciidoc" in ext:
+            #    convert_asciidoc_to_html(file_path, new_file)
 
 if __name__ == "__main__":
     main()
