@@ -1,9 +1,11 @@
 #!/bin/python3
-# create_test_files.py: Generate a test folder structure with unique Markdown and AsciiDoc files
-# Author: [Your Name]
-# Created: July 21, 2025
-# Description: Creates a test folder with directories, subdirectories, and random .md, .adoc, and .asciidoc files
-# with unique content for testing purposes.
+"""
+create_test_files.py: Generate a test folder structure with unique Markdown and AsciiDoc files
+Author: Antonius Torode
+Created: July 21, 2025
+Description: Creates a test folder with directories, subdirectories, and random .md, .adoc, and .asciidoc files
+with unique content for testing purposes.
+"""
 
 import os
 import random
