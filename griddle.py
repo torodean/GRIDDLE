@@ -1,11 +1,11 @@
 #!/bin/python3
 
-###########################################################################################
-# GRIDDLE: 
-# Author: Antonius Torode
-# Created: July 21, 2025
-# Description: TODO
-###########################################################################################
+"""
+GRIDDLE: Git Repository Indexing and Digital Documentation Linking Engine 
+Author: Antonius Torode
+Created: July 21, 2025
+Description: A system designed to unify and streamline documentation across multiple Git repositories
+"""
 
 import argparse
 
