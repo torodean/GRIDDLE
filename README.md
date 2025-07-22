@@ -1,7 +1,5 @@
 # GRIDDLE
 
-[toc]
-
 ## About
 
 The Git Repository Indexing and Digital Documentation Linking Engine (GRIDDLE) is a system designed to unify and streamline documentation across one more more Git repository.
