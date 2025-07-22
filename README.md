@@ -1,4 +1,4 @@
-# GRIDDLE
+# Git Repository Indexing and Digital Documentation Linking Engine (GRIDDLE)
 
 ## About
 
