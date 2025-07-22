@@ -57,7 +57,7 @@ def output_text(text, option="text"):
         print(text)
         
 
-def find_all_files_with_extensions(extensions, directory=".", excludes=None):
+def find_all_files_with_extensions(extensions, directory=".": str, excludes=None):
     """
     Finds all files with given extensions inside of a directory and includes the corresponding Git URL.
 
@@ -104,3 +104,53 @@ def find_all_files_with_extensions(extensions, directory=".", excludes=None):
                     'url': file_url
                 })
     return matched_files
+
+
+def generate_nav_html(folder_path: str) -> str:
+    """
+    Generate HTML navigation structure from HTML files in the given folder.
+    
+    Args:
+        folder_path (str): Path to the folder containing HTML files.
+    
+    Returns:
+        str: HTML string with the navigation structure, without indentation.
+    """
+    try:
+        root_dir = Path(folder_path)
+        if not root_dir.exists():
+            raise FileNotFoundError(f"Folder '{folder_path}' does not exist.")
+        if not root_dir.is_dir():
+            raise NotADirectoryError(f"Path '{folder_path}' is not a directory.")
+
+        nav_html = '<div class="navbar"><ul class="tree"><li><a href="#" data-url="home.html">Home</a></li>'
+
+        folder_structure = {}
+        for html_file in root_dir.rglob('*.html'):
+            rel_path = html_file.relative_to(root_dir)
+            parts = rel_path.parts
+            current = folder_structure
+            for part in parts[:-1]:
+                current = current.setdefault(part, {})
+            current[parts[-1]] = rel_path.as_posix()
+
+        def build_ul(structure: dict) -> str:
+            html = '<ul>'
+            for name, content in sorted(structure.items()):
+                if isinstance(content, dict):
+                    html += f'<li><span class="folder">{name}</span>'
+                    html += build_ul(content)
+                    html += '</li>'
+                else:
+                    html += f'<li><a href="#" data-url="{content}">{name}</a></li>'
+            html += '</ul>'
+            return html
+
+        nav_html += build_ul(folder_structure)
+        nav_html += '</ul></div>'
+
+        return nav_html
+
+    except Exception as e:
+        print(f"Error generating navigation HTML: {str(e)}")
+        return ""
