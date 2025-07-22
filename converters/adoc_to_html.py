@@ -10,7 +10,9 @@ import asciidoc
 import os
 
 def convert_adoc_to_html(input_file, output_file):
-    """Convert an AsciiDoc (.adoc) file to HTML."""
+    """
+    Convert an AsciiDoc (.adoc) file to HTML.
+    """
     try:
         # Check if input file exists
         if not os.path.exists(input_file):
@@ -71,7 +73,9 @@ def convert_adoc_to_html(input_file, output_file):
         print(f"An error occurred: {str(e)}")
 
 def convert_asciidoc_to_html(input_file, output_file):
-    """Convert an AsciiDoc (.asciidoc) file to HTML."""
+    """
+    Convert an AsciiDoc (.asciidoc) file to HTML.
+    """
     try:
         # Check if input file exists
         if not os.path.exists(input_file):
