@@ -1,6 +1,6 @@
 # GRIDDLE
 
-[[_TOC_]]
+[toc]
 
 ## About
 
