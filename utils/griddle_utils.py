@@ -62,13 +62,16 @@ def find_all_files_with_extensions(extensions, directory=".", excludes=None):
     Finds all files with given extensions inside of a directory and includes the corresponding Git URL.
 
     Args:
-        extensions: A list of file extensions (e.g., ["md", "adoc", "txt"]).
-        directory: The directory to search. Defaults to current directory.
-        excludes: A list of substrings to exclude if found in the file path. Defaults to empty list.
+        extensions (list of str): File extensions to include (e.g., ["md", "adoc", "txt"]).
+        directory (str): Root directory to start searching from. Defaults to the current directory.
+        excludes (list of str, optional): Substrings to filter out matching file paths. Defaults to an empty list.
 
     Returns:
-        A list of dictionaries with file metadata and Git URL.
-    """
+        list of dict: Each dictionary contains:
+            - 'name_no_ext': Filename without extension
+            - 'name_with_ext': Full filename with extension
+            - 'full_path': Absolute file path on disk
+            - 'url': Git URL pointing to the file in the current branch    """
     if excludes is None:
         excludes = []
         
