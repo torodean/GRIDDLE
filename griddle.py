@@ -10,6 +10,11 @@ Description: A system designed to unify and streamline documentation across mult
 import argparse
 import sys
 import os
+from bin.griddle_utils import *
+from bin.md_to_html import * 
+from bin.pdf_to_html import * 
+from bin.generate_nav import *
+from bin.html_tools import *
 
 def parse_arguments() -> argparse.Namespace:
     """
@@ -50,11 +55,12 @@ def main():
     args = parse_arguments()
     
     # Print parsed arguments for demonstration
-    print(f"Verbose mode: {args.verbose}")
-    print(f"Debug mode: {args.debug}")
-    print(f"Input folder: {args.input}")
-    print(f"Output folder: {args.output}")
+    output_text(f"Verbose mode: {args.verbose}", "note")
+    output_text(f"Debug mode: {args.debug}", "note")
+    output_text(f"Input folder: {args.input}", "note")
+    output_text(f"Output folder: {args.output}", "note")
 
+    # Generate output folder with created or compiled html files.
     for root, dirs, files in os.walk(args.input):
         for filename in files:
             file_path = os.path.join(root, filename)
@@ -62,14 +68,25 @@ def main():
             name_no_ext = os.path.splitext(filename)[0]
             ext = os.path.splitext(filename)[1].lstrip('.')
             new_file = args.output + "/" + replace_extension(file_path, "html")
-            #ensure_path_exists(new_file)
+            ensure_path_exists(new_file)
             
-            #if "md" in ext:
-            #    convert_md_to_html(file_path, new_file)
+            if "md" in ext:
+                convert_md_to_html(file_path, new_file)
+            elif "pdf" in ext:
+                convert_pdf_to_html(file_path, new_file)
             #elif "adoc" in ext:
             #    convert_adoc_to_html(file_path, new_file)
             #elif "asciidoc" in ext:
             #    convert_asciidoc_to_html(file_path, new_file)
+    
+    # Generate the navigation for the newly generated html files.
+    navigation = get_full_html_nav_block(args.output)
+    
+    # Setup the template files.
+    copy_folder_contents("templates", f"{args.output}")
+    replace_autogen_nav_section(f"{args.output}/index.html", navigation)
+    
+    
 
 if __name__ == "__main__":
     main()

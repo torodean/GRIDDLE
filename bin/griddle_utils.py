@@ -11,6 +11,7 @@ Many of the methods were taken and/or adapted from:
 """
 import os
 import subprocess
+import shutil
 
 def output_text(text, option="text"):
     """
@@ -57,7 +58,7 @@ def output_text(text, option="text"):
         print(text)
         
 
-def find_all_files_with_extensions(extensions, directory=".": str, excludes=None):
+def find_all_files_with_extensions(extensions, directory=".", excludes=None):
     """
     Finds all files with given extensions inside of a directory and includes the corresponding Git URL.
 
@@ -181,3 +182,57 @@ def replace_extension(file_path, new_ext):
     """
     base = os.path.splitext(file_path)[0]
     return f"{base}.{new_ext.lstrip('.')}"
+    
+    
+def copy_folder(src_dir, dest_dir):
+    """
+    Copy an entire folder and its contents to a new location.
+
+    Args:
+        src_dir (str): Path to the source folder.
+        dest_dir (str): Path to the destination folder.
+
+    Raises:
+        FileNotFoundError: If the source folder doesn't exist.
+        FileExistsError: If the destination folder already exists.
+        Exception: For other unexpected errors.
+    """
+    if not os.path.exists(src_dir):
+        raise FileNotFoundError(f"Source folder '{src_dir}' does not exist.")
+
+    if os.path.exists(dest_dir):
+        raise FileExistsError(f"Destination folder '{dest_dir}' already exists.")
+
+    shutil.copytree(src_dir, dest_dir)
+    
+    
+
+def copy_folder_contents(src_dir, dest_dir):
+    """
+    Copy the contents of a folder into another folder.
+
+    Args:
+        src_dir (str): Path to the source folder.
+        dest_dir (str): Path to the destination folder. Created if it doesn't exist.
+
+    Raises:
+        FileNotFoundError: If the source folder doesn't exist.
+        Exception: For unexpected errors.
+    """
+    if not os.path.exists(src_dir):
+        raise FileNotFoundError(f"Source folder '{src_dir}' does not exist.")
+
+    os.makedirs(dest_dir, exist_ok=True)
+    output_text(f"Copying contents from '{src_dir}' to '{dest_dir}'", "note")
+
+    for item in os.listdir(src_dir):
+        s = os.path.join(src_dir, item)
+        d = os.path.join(dest_dir, item)
+        if os.path.isdir(s):
+            shutil.copytree(s, d, dirs_exist_ok=True)
+            output_text(f"Copied directory '{s}' to '{d}'", "success")
+        else:
+            shutil.copy2(s, d)
+            output_text(f"Copied file '{s}' to '{d}'", "success")
+
+    output_text(f"Finished copying contents to '{dest_dir}'", "note")

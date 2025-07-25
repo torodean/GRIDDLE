@@ -6,6 +6,7 @@ This file contains various tools and methods needed for use in converting md (ma
 files to html. To use this file, simple import it and call the needed methods.
 """
 
+from .griddle_utils import output_text
 import markdown
 import sys
 import os
@@ -14,12 +15,12 @@ def convert_md_to_html(input_file, output_file):
     try:
         # Check if input file exists
         if not os.path.exists(input_file):
-            print(f"Error: Input file '{input_file}' does not exist.")
+            output_text(f"Error: Input file '{input_file}' does not exist.", "error")
             return
         
         # Check if input file has .md extension
         if not input_file.lower().endswith('.md'):
-            print("Warning: Input file does not have a .md extension.")
+            output_text("Warning: Input file does not have a .md extension.", "warning")
         
         # Read the Markdown file
         with open(input_file, 'r', encoding='utf-8') as md_file:
@@ -65,7 +66,7 @@ def convert_md_to_html(input_file, output_file):
         with open(output_file, 'w', encoding='utf-8') as html_file:
             html_file.write(html_template)
         
-        print(f"Successfully converted '{input_file}' to '{output_file}'")
+        output_text(f"Successfully converted '{input_file}' to '{output_file}'", "success")
         
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        output_text(f"An error occurred: {str(e)}", "error")

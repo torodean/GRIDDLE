@@ -5,13 +5,15 @@ Author: Antonius Torode
 Created: July 22, 2025
 """
 
+from collections import defaultdict
 from pathlib import Path
 from typing import List
 from bs4 import BeautifulSoup
 
 
 def get_all_html_files(folder_path: str) -> List[str]:
-    """Collect all HTML files in the given folder and subdirectories.
+    """
+    Collect all HTML files in the given folder and subdirectories.
 
     Args:
         folder_path (str): Path to the folder.
@@ -26,7 +28,7 @@ def get_all_html_files(folder_path: str) -> List[str]:
         if not root_dir.is_dir():
             raise NotADirectoryError(f"Path '{folder_path}' is not a directory.")
 
-        return [str(path.relative_to(root_dir.parent)) for path in root_dir.rglob('*.html')]
+        return [str(path.relative_to(root_dir)) for path in root_dir.rglob('*.html')]
 
     except Exception as e:
         print(f"Error getting HTML files: {str(e)}")
@@ -34,7 +36,8 @@ def get_all_html_files(folder_path: str) -> List[str]:
 
 
 def print_html_file_list(html_files: List[str]) -> None:
-    """Prints the list of HTML files for debugging.
+    """
+    Prints the list of HTML files for debugging.
 
     Args:
         html_files (List[str]): List of HTML file paths.
@@ -45,7 +48,8 @@ def print_html_file_list(html_files: List[str]) -> None:
 
 
 def generate_nav_html_from_list(html_files: List[str]) -> str:
-    """Generate nested HTML navigation structure from list of HTML file paths.
+    """
+    Generate nested HTML navigation structure from list of HTML file paths.
 
     Args:
         html_files (list[str]): List of relative HTML file paths.
@@ -53,7 +57,6 @@ def generate_nav_html_from_list(html_files: List[str]) -> str:
     Returns:
         str: HTML string of the navigation structure.
     """
-    from collections import defaultdict
 
     def insert_path(structure, parts, full_path):
         for part in parts[:-1]:
@@ -88,7 +91,8 @@ def generate_nav_html_from_list(html_files: List[str]) -> str:
 
 
 def format_html_pretty(html_str: str) -> str:
-    """Formats raw HTML string with indentation for readability.
+    """
+    Formats raw HTML string with indentation for readability.
 
     Args:
         html_str (str): Raw HTML string.
@@ -100,14 +104,28 @@ def format_html_pretty(html_str: str) -> str:
     return soup.prettify()
 
 
+def get_full_html_nav_block(input_folder):
+    """
+    Generate a fully formatted HTML navigation block from HTML files in a folder.
+
+    Args:
+        input_folder (str): Path to the folder containing HTML files.
+
+    Returns:
+        str: Indented and formatted HTML navigation block as a string.
+    """
+
+    html_files = get_all_html_files(input_folder)
+    nav_html = generate_nav_html_from_list(html_files)
+    formatted_html = format_html_pretty(nav_html)
+    return formatted_html
+
+
 def main():
     """
     Test the navigation generation.
     """
-    html_files = get_all_html_files("out_folder")
-    nav_html = generate_nav_html_from_list(html_files)
-    formatted_html = format_html_pretty(nav_html)
-    print(formatted_html)
+    print(get_full_html_nav_block("out_folder"))
 
 if __name__ == "__main__":
     main()
